@@ -1,3 +1,4 @@
+const ADDRESSES = require('../helper/coreAssets.json')
 // const utils = require('web3-utils');
 const sdk = require('@defillama/sdk');
 const MakerSCDConstants = require("./abis/makerdao.js");
@@ -85,7 +86,7 @@ async function tvl(timestamp, block, _, { api }) {
     }
   }
 
-  toa = toa.filter(i => i[0].toLowerCase() !== '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359')
+  toa = toa.filter(i => i[0].toLowerCase() !== ADDRESSES.ethereum.SAI.toLowerCase())
   const symbols = await api.multiCall({ abi: 'erc20:symbol', calls: toa.map(t => t[0]) })
   const gUNIToa = toa.filter((_, i) => symbols[i] === 'G-UNI')
   toa = toa.filter((_, i) => symbols[i] !== 'G-UNI')
@@ -114,7 +115,7 @@ async function unwrapGunis({ api, toa, balances = {} }) {
     sdk.util.sumSingleBalance(balances, token0s[i], token0Bal)
     sdk.util.sumSingleBalance(balances, token1s[i], token1Bal)
   })
-  sdk.util.removeTokenBalance(balances, '0x6b175474e89094c44da98b954eedeac495271d0f') // remove dai balances
+  sdk.util.removeTokenBalance(balances, ADDRESSES.ethereum.DAI) // remove dai balances
   return balances
 }
 
